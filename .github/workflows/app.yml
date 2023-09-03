@@ -24,3 +24,14 @@ jobs:
     - name: Run with python
       run: |
         python dns-spoofable.py -o output.txt
+    - name: Push
+      run: |
+        git version > /dev/null
+        sleep 1
+        git config --global user.name "HelloTools-bot"
+        git config --global user.email "3356136957@qq.com"
+        git add output.txt
+        git commit --allow-empty -m ":star: update: `date '+%Y-%m-%d %H:%M:%S'` [skip ci]"
+        sleep 1
+        git push
+        echo Success!
