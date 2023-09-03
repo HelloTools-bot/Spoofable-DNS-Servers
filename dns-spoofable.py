@@ -66,7 +66,6 @@ def testDNSServer(ip):
         response = sr(dns_request, timeout=1, verbose=False)
 
         if ('UDP:1' in str(response[0])):
-            print(str(ip) + " is spoofable! Added to ", args.output)
             with open(args.output, "a") as f:
                 f.write(str(ip) + '\n')
         
