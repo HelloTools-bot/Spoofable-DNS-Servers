@@ -1,11 +1,9 @@
 name: Python application
 
 on:
-  push:
-    branches: [ "main" ]
   workflow_dispatch:
   schedule:
-  - cron: "57 */12 * * *"
+  - cron: "0 4 5 * *"
 
 permissions:
   contents: write
