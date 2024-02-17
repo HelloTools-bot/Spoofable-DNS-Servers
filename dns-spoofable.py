@@ -10,7 +10,7 @@ from threading import Thread
 from scapy.all import *
 from pathlib import Path
 
-parser = argparse.ArgumentParser (
+parser = argparse.ArgumentParser(
     description="DNS Spoofable Servers: A tool to get all UDP spoofable servers from the public DNS domain"
 )
 
@@ -22,9 +22,7 @@ if len(sys.argv) <= 1:
     parser.print_help()
     sys.exit(1)
 
-
 dns_list = []
-threadRun = True
 dnsCount = 0
 
 def validate_ip(s):
@@ -40,14 +38,11 @@ def validate_ip(s):
     return True
 
 def getDNSServers():
-    global maxThreads
-    global threadCount
-
-    print('Downloading dns server list...' )
+    print('Downloading dns server list...')
     url = 'https://public-dns.info/nameservers.txt'
     filename = 'nameservers.txt'
 
-    if (Path(filename).is_file()):
+    if Path(filename).is_file():
         os.remove(filename)
 
     wget.download(url)
@@ -57,17 +52,19 @@ def getDNSServers():
         dns_list = [line.rstrip() for line in file]
 
     for i in dns_list:
-        if (validate_ip(i)):
+        if validate_ip(i):
             _ = Thread(target=testDNSServer, args=(i,)).start()
 
 def testDNSServer(ip):
     try:
         dns_request = IP(dst=str(ip)) / UDP(dport=53) / DNS(rd=1, qd=DNSQR(qname='google.com', qtype='SOA'))
-        response = sr(dns_request, timeout=1, verbose=False)
+        response = sr1(dns_request, timeout=1, verbose=False)
 
-        if ('UDP:1' in str(response[0])):
+        if response and response.haslayer(DNS):
             with open(args.output, "a") as f:
                 f.write(str(ip) + '\n')
+                global dnsCount
+                dnsCount += 1
         
     except socket.error as e:
         print("Socket: ", e)
@@ -75,8 +72,6 @@ def testDNSServer(ip):
         print("Exception: ", e)
 
 def signal_event_exit(signal, frame):
-    global threadRun
-    threadRun = False
     sys.exit(0)
 
 if __name__ == "__main__":
@@ -84,7 +79,7 @@ if __name__ == "__main__":
 
     signal.signal(signal.SIGINT, signal_event_exit)
     
-    if (Path(args.output).is_file()):
+    if Path(args.output).is_file():
         os.remove(args.output)
 
     getDNSServers()
