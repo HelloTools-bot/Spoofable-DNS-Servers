@@ -29,7 +29,7 @@ jobs:
         git version > /dev/null
         sleep 1
         git config --global user.name "HelloTools-bot"
-        git config --global user.email "3356136957@qq.com"
+        git config --global user.email "bot@932.moe"
         git add output.txt
         git commit --allow-empty -m ":star: update: `date '+%Y-%m-%d %H:%M:%S'` [skip ci]"
         sleep 1
