@@ -12,14 +12,13 @@ jobs:
   run:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Setup
-      uses: actions/setup-python@v3
+      uses: actions/setup-python@v4
       with:
         python-version: "3.10"
     - name: Install
       run: |
-        sudo python -m pip install --upgrade pip
         sudo pip install argparse scapy wget pathlib
         if [ -f requirements.txt ]; then sudo pip install -r requirements.txt; fi
     - name: Run
